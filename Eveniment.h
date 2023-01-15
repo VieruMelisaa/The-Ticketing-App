@@ -1,6 +1,7 @@
 #pragma once
 #include"Locatie.h"
 #include<iostream>
+
 using namespace std;
 class Eveniment
 {
@@ -25,9 +26,11 @@ public:
 	string getOra();
 	void setOra(string ora);
 	bool valid();
-	friend ostream& operator<<(ostream&, Eveniment);
+	friend ostream& operator<<(ostream&, Eveniment&);
 	friend istream& operator>>(istream&, Eveniment&);
 	friend class Bilet;
+	friend ifstream& operator>>(ifstream&, Eveniment&);
+	friend ofstream& operator<<(ofstream&, Eveniment&);
 
 };
    

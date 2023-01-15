@@ -1,0 +1,19 @@
+﻿  Bilete.cpp
+C:\Users\user\Desktop\The Ticketing App\Bilete.cpp(124,30): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+  Eveniment.cpp
+  EvenimentBilet.cpp
+C:\Users\user\Desktop\The Ticketing App\EvenimentBilet.cpp(2,33): warning C4305: 'initializing': truncation from 'double' to 'float'
+  Locatie.cpp
+  Main.cpp
+  BiletPrioritar.cpp
+C:\Users\user\Desktop\The Ticketing App\BiletPrioritar.cpp(49,31): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+  Generating Code...
+C:\Users\user\Desktop\The Ticketing App\BiletPrioritar.cpp(35): warning C4715: 'BiletPrioritar::operator=': not all control paths return a value
+C:\Users\user\Desktop\The Ticketing App\Locatie.cpp(131): warning C4715: 'Locatie::operator=': not all control paths return a value
+C:\Users\user\Desktop\The Ticketing App\Locatie.cpp(223): warning C4715: 'Locatie::getNrLocuriZone': not all control paths return a value
+C:\Users\user\Desktop\The Ticketing App\Locatie.cpp(196): warning C4715: 'Locatie::getZone': not all control paths return a value
+C:\Users\user\Desktop\The Ticketing App\Locatie.cpp(331): warning C4715: 'Locatie::valid_zona': not all control paths return a value
+C:\Users\user\Desktop\The Ticketing App\Eveniment.cpp(134): warning C4715: 'Eveniment::operator=': not all control paths return a value
+C:\Users\user\Desktop\The Ticketing App\Eveniment.cpp(247): warning C4715: 'Eveniment::valid': not all control paths return a value
+C:\Users\user\Desktop\The Ticketing App\Bilete.cpp(120): warning C4715: 'Bilet::operator=': not all control paths return a value
+  The Ticketing App.vcxproj -> C:\Users\user\Desktop\The Ticketing App\Debug\The Ticketing App.exe

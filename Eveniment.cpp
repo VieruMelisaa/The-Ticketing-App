@@ -3,6 +3,7 @@
 #include"Locatie.h"
 #include<iostream>
 #include<string>
+#include <fstream>
 using namespace std;
 Eveniment::Eveniment()
 {
@@ -201,9 +202,9 @@ void Eveniment::setOra(string ora)
 			this->ora = ora;
 	}
 }
-ostream& operator<<(ostream& out, Eveniment e)
+ostream& operator<<(ostream& out, Eveniment& e)
 {
-	out << "Evenimentul " << e.denumire << " va avea loc pe data de" << e.data << " la ora " << e.ora << " (Locatia: " << e.locatie->getAdresa() << " )";
+	out << "Evenimentul " << e.denumire << " va avea loc pe data de " << e.data << " la ora " << e.ora << " (Locatia: " << e.locatie->getAdresa() << " )";
 	return out;
 }
 istream& operator>>(istream& in, Eveniment& e)
@@ -243,6 +244,49 @@ bool Eveniment::valid()
 		return true;
 	}
 	else false;
+}
+//ofstream& operator<<(ofstream& ofs, Eveniment& e)
+//{
+//	ofs<< "Evenimentul " << e.denumire << " va avea loc pe data de" << e.data << " la ora " << e.ora << " (Locatia: " << e.locatie->getAdresa() << " )";
+//	return ofs;
+// }
+ofstream& operator<<(ofstream& outF, Eveniment& e)
+{
+	outF.write((char*)&e.denumire, sizeof(e.denumire));
+	outF.write((char*)&e.data, sizeof(e.data));
+	outF.write((char*)&e.ora, sizeof(e.ora));
+	outF.write((char*)&e.locatie, sizeof(e.locatie));
+	return outF;
+}
+ifstream& operator>>(ifstream& inF, Eveniment& e)
+{
+	char buffer[256]; 
+	inF.getline(buffer,256);
+	e.setDenumire(buffer);
+	getline(inF, e.ora);
+	getline(inF, e.data);
+	
+	Locatie locatie;
+	string file = "";
+	cout << "Introduceti numele fisierului de unde se va extrage locatia(locatii.txt):";
+	getline(cin, file);
+	ifstream f(file);
+	if (f.is_open())
+	{
+		while (!f.eof())
+		{
+			f >> locatie;
+			cout << locatie;
+			if (locatie.valid())
+			{	
+				e.locatie = new Locatie(locatie);
+				
+			}
+		}
+	}
+	else cout << "Fisierul nu exista."<<endl;
+	f.close();
+	return inF;
 }
 
 

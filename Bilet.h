@@ -1,8 +1,9 @@
 #pragma once
 #include"Eveniment.h"
+#include "EvenimentBilet.h"
 #include<iostream>
 using namespace std;
-class Bilet
+class Bilet:public EvenimentBilet
 {
 private:
 	const int id;
@@ -16,6 +17,16 @@ private:
 	int nrMaxBilete;
 public:
 	Bilet();
+	EtipBilet TipBilet(EtipBilet TipBilet)
+	{
+		tipBilet = TipBilet;
+		return tipBilet;
+
+	}
+	float getPretFinal()
+	{
+		return pret * (1 + TVA);
+	}
 	Bilet(const char* categorie, const string zona, float pret, int loc, Eveniment e);
 	Bilet(const Bilet& b);
 	Bilet &operator=(const Bilet& b);
@@ -35,10 +46,12 @@ public:
 	void setRand(int rand);
 	string getZona();
 	void setZona(string zona);
+	//string tip_Bilet();
 	friend ostream& operator<<(ostream&, Bilet);
 	friend istream& operator>>(istream&, Bilet&);
 	friend class Eveniment;
-	
+	friend ifstream& operator>>(ifstream& ifs, Bilet& b);
+	friend ofstream& operator<<(ofstream& ofs, Bilet& b);
 
 };
 

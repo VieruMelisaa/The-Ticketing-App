@@ -1,5 +1,6 @@
 #pragma once
 #include<iostream>
+#include <map>
 using namespace std;
 class Locatie
 {
@@ -9,6 +10,8 @@ private:
 	int nrZone;
 	int capacitate;
 	int* nrLocuriZone;
+	map<int, pair<int, bool>>locuri;//cheie-locul//utilizata pentru a vedea disponibilitatea locurilor pt fiecare zona
+									//<zona,disponibilitate>
 
 public:
 	Locatie();
@@ -30,12 +33,14 @@ public:
 	int* getNrLocuriZone();
 	int getNrLocuriZone(int i);
 	void setNrLocuriZone(int* nrLocuriZone, int nrZone);
+	void getLocuri();
 	bool valid();
-	void loc_indisponibil(int loc, string zona);
-	bool disponibilitate_locuri(string zona, int loc);
+	bool loc_dat(int loc);
 	bool valid_zona(string zona);
 	friend ostream& operator<<(ostream&, Locatie&);
 	friend istream& operator>>(istream&, Locatie&);
 	friend class Eveniment;
+	friend ifstream& operator>>(ifstream&, Locatie& );
+	friend ofstream& operator<<(ofstream&, Locatie& );
 };
 

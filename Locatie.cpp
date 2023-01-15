@@ -1,6 +1,7 @@
 #include "Locatie.h"
 #include<iostream>
 #include<string>
+#include<fstream>
 using namespace std;
 Locatie::Locatie()
 {
@@ -30,7 +31,7 @@ Locatie::Locatie(const string adresa, string* zone, int nrZone, int capacitate, 
 			this->zone[i] = zone[i];
 		}
 	}
-	else throw exception("Zone invalide");
+	
 	if (capacitate > 0)
 		this->capacitate = capacitate;
 	else throw exception("Capacitate invalida");
@@ -43,7 +44,12 @@ Locatie::Locatie(const string adresa, string* zone, int nrZone, int capacitate, 
 		}
 	}
 	else throw exception("Numarul de locuri per zona nu este valid");
-
+	int k = 0;
+	for (int i = 0; i < this->nrZone; i++) {
+		for (int j = 1; j <= this->nrLocuriZone[i]; j++) {
+			locuri[++k] = make_pair(i, true);
+		}
+	}
 }
 Locatie::Locatie(const Locatie& l)
 {
@@ -73,6 +79,7 @@ Locatie::Locatie(const Locatie& l)
 			this->nrLocuriZone[i] = l.nrLocuriZone[i];
 		}
 	}
+	locuri = l.locuri;
 
 }
 Locatie& Locatie::operator=(const Locatie& l)
@@ -116,6 +123,7 @@ Locatie& Locatie::operator=(const Locatie& l)
 				this->nrLocuriZone[i] = l.nrLocuriZone[i];
 			}
 		}
+		locuri = l.locuri;
 
 		return *this;
 
@@ -225,16 +233,38 @@ void Locatie::setNrLocuriZone(int* nrLocuriZone, int nrZone)
 	}
 
 }
+void Locatie::getLocuri()
+{
+	for (auto const& x : locuri) {
+		cout << "Locul " << x.first << " este in zona " << zone[x.second.first] << " si este ";
+		if (x.second.second) {
+			cout << "disponibil." << endl;
+		}
+		else {
+			cout << "indisponibil." <<endl;
+		}
+	}
+}
+
 bool Locatie::valid()
 {
-	if (adresa != "" && zone != nullptr && nrZone > 0 && capacitate > 0 && nrLocuriZone != nullptr)
+	if (adresa != "" &&capacitate > 0 && nrZone > 0 &&zone != nullptr && nrLocuriZone != nullptr)
 	{
 		return true;
 	}
 	else return false;
 	
 }
-
+bool Locatie::loc_dat(int loc)
+{
+	if (locuri[loc].second)
+	{
+		locuri[loc].second = false;
+		return true;
+		//cout << "Bilet cumparat in zona" << zone[locuri[loc].first] << ": locul " << loc;
+	}
+	else return false; //cout << "Locul " << loc << "este indisponibil";
+}
 ostream& operator<<(ostream& out, Locatie &l)
 {
 	out<< "Locatia se afla la " << l.adresa << " si are o capacitate de " << l.capacitate<<endl;
@@ -243,6 +273,7 @@ ostream& operator<<(ostream& out, Locatie &l)
 	{
 		out << "\nZona "<<l.zone[i] << ": " << l.nrLocuriZone[i] << " locuri";
 	}
+	out << "\nDisponibilitatea locurilor per Zona:"<<endl; l.getLocuri();
 	return out;
 
 }
@@ -268,7 +299,13 @@ istream& operator>>(istream& in, Locatie& l)
 	{
 		in >> l.nrLocuriZone[i];
 	}
-
+	int k = 0;
+	for (int i = 0; i < l.nrZone; i++) {
+		for (int j = 1; j <= l.nrLocuriZone[i]; j++) {
+			cout << "Introduceti disponibilitatea locului " << k<<": ";
+			in >> l.locuri[++k].second;
+		}
+	}
 	return in;
 
 }
@@ -276,49 +313,7 @@ string Locatie::operator[](int i)
 {
 	return zone[i];
 }
-void Locatie::loc_indisponibil(int loc, string zona)
-{
-	int k = -1;
-	
-		if (loc > -1 && zona != "")
-		{
-			for (int i = 0; i <nrZone; i++)
-			{
-				if (zona == zone[i])
-				{
-					k = i;
-					i = nrZone;
-				}
-			}
-			nrLocuriZone[k]--;
-		}
-	
-}
-bool Locatie::disponibilitate_locuri(string zona,int loc)
-{
-	if (zona != "")
-	{
-		int k = -1;
-		for (int i = 0; i < nrZone; i++)
-		{
-			if (zona == zone[i])
-			{
-				k = i;
-				i = nrZone;
-			}
-		}
-		if (nrLocuriZone[k] > 0)
-		{
-			if (loc >= 0 && loc < nrLocuriZone[k])
-			{
-				nrLocuriZone[k]--;
-				return true;
-			}
-			
-		}
-	}
 
-}
 bool Locatie::valid_zona(string zona)
 {
 	int k = 0;
@@ -334,3 +329,59 @@ bool Locatie::valid_zona(string zona)
 		if (k == 1)return true;
 	}
 }
+ifstream& operator>>(ifstream& inF, Locatie& l)
+{
+	
+		getline(inF, l.adresa);
+		inF >> l.capacitate;
+		inF >> l.nrZone;
+		l.zone = new string[l.nrZone];
+		for (int i = 0; i < l.nrZone; i++)
+		{
+			inF >> l.zone[i];
+		}
+		l.nrLocuriZone = new int[l.nrZone];
+		for (int i = 0; i < l.nrZone; i++)
+		{
+			inF >>l.nrLocuriZone[i];
+		}
+		int k = 0;
+		for (int i = 0; i < l.nrZone; i++) {
+			for (int j = 1; j <= l.nrLocuriZone[i]; j++) {
+				
+				inF >> l.locuri[++k].second;//true || false
+			}
+		}
+			return inF;
+}
+//ofstream& operator<<(ofstream& ofs, Locatie& l)
+//{	
+//	ofs << "Locatia se afla la " << l.adresa << " si are o capacitate de " << l.capacitate << endl;
+//	ofs << "Are " << l.nrZone << " zone disponibile:";
+//	for (int i = 0; i < l.nrZone; i++)
+//	{
+//		ofs << "\nZona " << l.zone[i] << ": " << l.nrLocuriZone[i] << " locuri";
+//	}
+// 
+//	return ofs;
+//}
+ofstream& operator<<(ofstream& outF, Locatie& l)
+{
+	outF.write((char*)&l.adresa, sizeof(l.adresa));
+	outF.write((char*)&l.capacitate, sizeof(l.capacitate));
+	outF.write((char*)&l.nrZone, sizeof(l.nrZone));
+	for (int i = 0; i < l.nrZone; i++)
+	{
+		outF.write((char*)&l.zone[i], sizeof(l.zone[i]));
+	}
+	for (int i = 0; i < l.nrZone; i++)
+	{
+		outF.write((char*)&l.nrLocuriZone[i], sizeof(l.nrLocuriZone[i]));
+	} 
+	outF.write((char*)&l.locuri, sizeof(l.locuri));
+	return outF;
+}
+
+
+
+

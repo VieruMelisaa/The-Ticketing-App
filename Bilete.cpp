@@ -2,6 +2,7 @@
 #include "Bilet.h"
 #include<iostream>
 #include<string>
+#include<fstream>
 using namespace std;
 int Bilet::nrBilete = 0;
 Bilet::Bilet() :id(nrBilete++)
@@ -38,14 +39,14 @@ Bilet::Bilet(const char* categorie, const string zona, float pret, int loc, Even
 	else throw exception("Zona invalida");
 	
 		this->pret = pret;
-
-	if (e.locatie->disponibilitate_locuri(zona, loc) == true)
-	{
-		this->loc = loc;
-	}
-	else throw exception("Loc indisponibil");
-
-
+		if (e.locatie!=nullptr)
+		{
+			if (e.locatie->loc_dat(loc))
+			{
+				this->loc = loc;
+			}
+			else throw exception("Loc indisponibil");
+		}
 }
 Bilet::Bilet(const Bilet& b) :id(b.id)
 {
@@ -65,13 +66,13 @@ Bilet::Bilet(const Bilet& b) :id(b.id)
 		this->zona = b.zona;
 	}
 	this->pret = b.pret;
-
-
-	if (b.e->locatie->disponibilitate_locuri(zona, b.loc) == true)
+	if (b.e->locatie != nullptr)
 	{
-		this->loc = b.loc;
+		if (b.e->locatie->loc_dat(b.loc))
+		{
+			this->loc = b.loc;
+		}
 	}
-
 
 }
 Bilet& Bilet::operator=(const Bilet& b)
@@ -105,10 +106,14 @@ Bilet& Bilet::operator=(const Bilet& b)
 		}
 			this->pret = b.pret;
 
-		if (b.e->locatie->disponibilitate_locuri(zona, b.loc) == true)
-		{
-			this->loc = b.loc;
-		}
+		if (b.e->locatie != nullptr)
+			{
+				if (b.e->locatie->loc_dat(b.loc))
+				{
+					this->loc = b.loc;
+				}
+			}
+		
 		return *this;
 	}
 
@@ -190,7 +195,7 @@ int Bilet::getLoc()
 }
 void Bilet::setLoc(int loc)
 {
-	if (loc >= 0)
+	if (e->locatie->loc_dat(loc)==true)
 	{
 		this->loc = loc;
 	}
@@ -208,9 +213,11 @@ void Bilet::setZona(string zona)
 	}
 
 }
+
+
 ostream& operator<<(ostream& out, Bilet b)
 {
-	out << "Biletul pentru evenimentul " << b.eveniment << " este din categoria " << b.categorie << ", are pretul de " << b.pret;
+	out << "Biletul pentru evenimentul " <<b.eveniment<< " este din categoria " << b.categorie << ", are pretul de " << b.getPretFinal();
 	out << " lei si corespunde locului " << b.loc << " zona " << b.zona;
 	out << "\nNr maxim de bilete este: " << b.nrMaxBilete;
 	return out;
@@ -244,8 +251,59 @@ istream& operator>>(istream& in, Bilet& b)
 	getline(in, b.zona);
 	
 	cout << "Introduceti locul dorit:";
-	in >> b.loc;
+	int loc;
+	in >> loc;
+	if (loc > 0)
+	{
+		b.setLoc(loc);
+	}
 	cout << "Introduceti pretul:";
 	in >> b.pret;
 	return in;
+}
+ifstream& operator>>(ifstream& inF, Bilet& b)
+{
+	Eveniment ev;
+	string file = "";
+	cout << "Introduceti numele fisierului de unde se va extrage evenimentul(test_ifs.txt):";
+	getline(cin, file);
+	ifstream f(file);
+	if (f.is_open())
+	{
+		while (!f.eof())
+		{
+			f >> ev;
+			cout << ev << endl;
+			if (ev.valid())
+			{
+				b.e = new Eveniment(ev);
+				b.eveniment = b.e->getDenumire();
+			}
+		}
+	}
+	else cout << "Fisierul nu exista." << endl;
+	f.close();
+	string buffer;
+	getline(inF, buffer);
+	b.setCategorie(buffer);
+	getline(inF, b.zona);
+	int loc;
+	inF >> loc;
+	if (loc > 0)
+	{
+		b.setLoc(loc);
+	}
+	inF >> b.pret;
+	return inF;
+
+}
+ofstream& operator<<(ofstream& outF, Bilet& b)
+{
+	outF.write((char*)&b.eveniment, sizeof(b.eveniment));
+	outF.write((char*)&b.categorie, sizeof(b.categorie));
+	outF.write((char*)&b.pret, sizeof(b.pret));
+	outF.write((char*)&b.loc, sizeof(b.loc));
+	outF.write((char*)&b.zona, sizeof(b.zona));
+	outF.write((char*)&b.nrMaxBilete, sizeof(b.nrMaxBilete));
+	return outF;
 }

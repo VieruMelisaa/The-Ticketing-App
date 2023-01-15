@@ -27,6 +27,12 @@
     <ClCompile Include="Bilete.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="EvenimentBilet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BiletPrioritar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Locatie.h">
@@ -36,6 +42,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Eveniment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EvenimentBilet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BiletPrioritar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
